@@ -1,5 +1,9 @@
 import 'package:first_game/model/tile_model.dart';
 
+int points = 0;
+bool imgselected = false;
+List<TileModel> pairs = [];
+
 List<TileModel> getPairs(){
   List<TileModel> pairs = [];
   TileModel tileModel = TileModel(imageAssetPath: 'assets/captain.png', isSelected: false);

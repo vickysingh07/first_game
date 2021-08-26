@@ -12,7 +12,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  List<TileModel> pairs = [];
+  List<TileModel> visiblePairs = [];
 
   @override
   void initState() {
@@ -20,14 +20,27 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     pairs = getPairs();
     pairs.shuffle();
+    visiblePairs = pairs;
+    imgselected = true;
+    Future.delayed(const Duration(seconds: 5), () {
+     setState(() {
+       visiblePairs = getQuestions();
+       imgselected = false;
+     });
+    });
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        padding: const EdgeInsets.symmetric(vertical: 50, horizontal: 20),
         child: Column(
           children: [
-            const Text("0/800"),
+            const SizedBox(height: 40,) ,
+            Text("$points/800", style: const TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.w500,
+            )),
             const Text("Points"),
             const SizedBox(height: 20.0,),
             GridView(
@@ -36,11 +49,12 @@ class _HomePageState extends State<HomePage> {
                     maxCrossAxisExtent: 100,
                     mainAxisSpacing: 0.0
                 ),
-              children: List.generate(pairs.length, (index){
+              children: List.generate(visiblePairs.length, (index){
                 return Tile(
-                  imageAssetPath: pairs[index].getImageAssetPath(),
-                  selected: pairs[index].getIsSelected(),
+                  imageAssetPath: visiblePairs[index].getImageAssetPath(),
+                  selected: visiblePairs[index].getIsSelected(),
                   parent: this,
+                  tileIndex: index,
                 );
               }),
             )
@@ -54,8 +68,9 @@ class _HomePageState extends State<HomePage> {
 class Tile extends StatefulWidget {
   String imageAssetPath;
   bool selected;
+  int tileIndex;
   _HomePageState parent;
-  Tile({required this.imageAssetPath, required this.parent, required this.selected});
+  Tile({required this.imageAssetPath, required this.parent, required this.selected, required this.tileIndex});
   //const Tile({Key? key}) : super(key: key);
 
   @override
@@ -65,9 +80,18 @@ class Tile extends StatefulWidget {
 class _TileState extends State<Tile> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(5.0),
-      child: Image.asset(widget.imageAssetPath),
+    return GestureDetector(
+      onTap: (){
+        if(!imgselected){
+        setState(() {
+          pairs[widget.tileIndex].setIsSelected(true);
+        });
+        }
+      },
+      child: Container(
+        margin: const EdgeInsets.all(5.0),
+        child: Image.asset(pairs[widget.tileIndex].getIsSelected() ? pairs[widget.tileIndex].getImageAssetPath(): widget.imageAssetPath)
+      ),
     );
   }
 }
