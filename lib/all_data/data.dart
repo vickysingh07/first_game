@@ -2,7 +2,12 @@ import 'package:first_game/model/tile_model.dart';
 
 int points = 0;
 bool imgselected = false;
+String selectedImageAssetPath = "";
+int selectedTileIndex = 20;
+
 List<TileModel> pairs = [];
+List<TileModel> visiblePairs = [];
+
 
 List<TileModel> getPairs(){
   List<TileModel> pairs = [];
